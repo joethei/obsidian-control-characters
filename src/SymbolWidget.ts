@@ -14,7 +14,7 @@ export class SymbolWidget extends WidgetType {
 	}
 
 	toDOM() {
-		let span = document.createElement("span");
+		const span = document.createElement("span");
 		span.textContent = this.text;
 		span.addClass("control-character");
 		return span;

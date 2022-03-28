@@ -20,7 +20,7 @@ class StatefulDecorationSet {
 
 	async computeAsyncDecorations(tokens: TokenSpec[]): Promise<DecorationSet | null> {
 		const decorations: Range<Decoration>[] = [];
-		for (let token of tokens) {
+		for (const token of tokens) {
 			let deco = this.decoCache[""];
 			if (!deco) {
 				deco = this.decoCache[""] = Decoration.widget({ widget: new SymbolWidget("↵") });
@@ -66,9 +66,9 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 				}
 
 				const targetElements: TokenSpec[] = [];
-				for (let {from, to} of view.visibleRanges) {
+				for (const {from, to} of view.visibleRanges) {
 					const text = view.state.sliceDoc(from, to);
-					for (let regExpMatchArray of text.matchAll(/\n$/gm)) {
+					for (const regExpMatchArray of text.matchAll(/\n$/gm)) {
 						targetElements.push({from: regExpMatchArray.index, to: regExpMatchArray.index});
 					}
 				}
