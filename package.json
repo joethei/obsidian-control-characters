@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-control-characters",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Show control/non-printing characters in edit mode",
 	"main": "build/main.js",
 	"scripts": {

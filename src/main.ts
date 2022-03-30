@@ -1,4 +1,4 @@
-import { Plugin } from 'obsidian';
+import {Notice, Plugin} from 'obsidian';
 import {Prec} from "@codemirror/state";
 import {ControlCharactersSettingsTab} from "./SettingsTab";
 import {inlineCharacterDecoration} from "./InlineCharacterDecoration";
@@ -20,11 +20,15 @@ export default class ControlCharacterPlugin extends Plugin {
 	settings: ControlCharacterSettings;
 
 	async onload() {
-		await this.loadSettings();
-		this.registerEditorExtension(Prec.lowest(inlineCharacterDecoration(this)));
-		this.registerEditorExtension(Prec.lowest(newLineDecoration(this)));
+		if ((this.app.vault as any).config?.legacyEditor) {
+			await this.loadSettings();
+			this.registerEditorExtension(Prec.lowest(inlineCharacterDecoration(this)));
+			this.registerEditorExtension(Prec.lowest(newLineDecoration(this)));
 
-		this.addSettingTab(new ControlCharactersSettingsTab(this));
+			this.addSettingTab(new ControlCharactersSettingsTab(this));
+		} else {
+			new Notice("Control Characters: You are using the legacy editor, this plugin is not supported there");
+		}
 	}
 
 	onunload() {

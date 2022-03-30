@@ -71,7 +71,6 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 				const targetElements: TokenSpec[] = [];
 
 				for (const {from, to} of view.visibleRanges) {
-					console.log("visible range " + from + " " + to);
 					const text = view.state.sliceDoc(from, to);
 					for (const match of text.matchAll(/\n$|[\s\S]$/gm)) {
 						const index = from + match.index + 1;

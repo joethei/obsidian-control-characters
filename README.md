@@ -11,3 +11,6 @@ Show control characters in edit mode.
 ![Demo screenshot](https://i.joethei.space/Obsidian_iYhRkiQ0sX.png)
 
 ---
+
+This plugin is built for the new editor and does not work on the old _legacy_ editor.
+If you really want to use the legacy editor you will have to use the [Show whitespace](https://github.com/deathau/cm-show-whitespace-obsidian) plugin.
