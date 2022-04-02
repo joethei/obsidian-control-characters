@@ -7,8 +7,9 @@ import {
 	MatchDecorator
 } from "@codemirror/view";
 import {SymbolWidget} from "./SymbolWidget";
-import ControlCharacterPlugin from "./main";
+import ControlCharacterPlugin, {staticConfig} from "./main";
 import {statefulDecorations} from "./StatefulDecoration";
+import {StateField} from "@codemirror/state";
 
 function buildViewPlugin(plugin: ControlCharacterPlugin) {
 	return ViewPlugin.fromClass(
@@ -17,14 +18,13 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 			decorations: DecorationSet = Decoration.none;
 
 			constructor(public view: EditorView) {
-
 				this.decorator = new MatchDecorator({
 					regexp: /\s/g,
 					decoration: (match => {
 						let value = " ";
-						if (match.toString() === "\t" && plugin.settings.tab) {
+						if (plugin.settings.enabled && match.toString() === "\t" && plugin.settings.tab) {
 							value = "⇨";
-						} else if(plugin.settings.space) {
+						} else if(plugin.settings.enabled && plugin.settings.space) {
 							value = "◦";
 						}
 
@@ -34,13 +34,12 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 			}
 
 			update(update: ViewUpdate) {
-				if (update.docChanged || update.viewportChanged) {
+				const reconfigured = update.startState.facet(staticConfig) !== update.state.facet(staticConfig);
+				if (update.docChanged || update.viewportChanged || reconfigured) {
 					this.decorations = this.decorator.updateDeco(update, this.decorations);
 				}
 			}
 
-			destroy() {
-			}
 		},
 		{
 			decorations: (v) => v.decorations
@@ -48,6 +47,6 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 	);
 }
 
-export function inlineCharacterDecoration(plugin: ControlCharacterPlugin) {
+export function inlineDecoration(plugin: ControlCharacterPlugin): (StateField<DecorationSet> | ViewPlugin<{ decorator: MatchDecorator; decorations: DecorationSet; view: EditorView; update(update: ViewUpdate): void }>)[] {
 	return [statefulDecorations.field, buildViewPlugin(plugin)];
 }

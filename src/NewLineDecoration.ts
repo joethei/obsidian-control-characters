@@ -2,8 +2,9 @@ import { debounce } from "obsidian";
 import { EditorView, Decoration, DecorationSet, ViewUpdate, ViewPlugin } from "@codemirror/view";
 import { Range } from "@codemirror/rangeset";
 import {SymbolWidget} from "./SymbolWidget";
-import ControlCharacterPlugin from "./main";
+import ControlCharacterPlugin, {staticConfig} from "./main";
 import {statefulDecorations} from "./StatefulDecoration";
+import {StateField} from "@codemirror/state";
 
 /*
 using a custom decoration here because a MatchDecoration only seems to allow replacing decorations, not widget ones.
@@ -56,16 +57,15 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 			}
 
 			update(update: ViewUpdate) {
-				if (update.docChanged || update.viewportChanged) {
+				const reconfigured = update.startState.facet(staticConfig) !== update.state.facet(staticConfig);
+				if (update.docChanged || update.viewportChanged || reconfigured) {
 					this.buildAsyncDecorations(update.view);
 				}
 			}
 
-			destroy() {
-			}
-
 			buildAsyncDecorations(view: EditorView) {
-				if(!plugin.settings.newLine) {
+				if(!plugin.settings.enabled || !plugin.settings.newLine) {
+					this.decoManager.debouncedUpdate([]);
 					return;
 				}
 				const targetElements: TokenSpec[] = [];
@@ -84,6 +84,6 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 
 }
 
-export function newLineDecoration(plugin: ControlCharacterPlugin) {
+export function newLineDecoration(plugin: ControlCharacterPlugin): (StateField<DecorationSet> | ViewPlugin<{ decoManager: StatefulDecorationSet; update(update: ViewUpdate): void; destroy(): void; buildAsyncDecorations(view: EditorView): void }>)[] {
 	return [statefulDecorations.field, buildViewPlugin(plugin)];
 }
