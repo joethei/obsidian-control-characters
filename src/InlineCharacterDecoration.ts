@@ -7,7 +7,7 @@ import {
 	MatchDecorator
 } from "@codemirror/view";
 import {SymbolWidget} from "./SymbolWidget";
-import ControlCharacterPlugin, {staticConfig} from "./main";
+import ControlCharacterPlugin from "./main";
 import {statefulDecorations} from "./StatefulDecoration";
 import {StateField} from "@codemirror/state";
 
@@ -24,7 +24,7 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 						let value = " ";
 						if (plugin.settings.enabled && match.toString() === "\t" && plugin.settings.tab) {
 							value = "⇨";
-						} else if(plugin.settings.enabled && plugin.settings.space) {
+						} else if (plugin.settings.enabled && plugin.settings.space) {
 							value = "◦";
 						}
 
@@ -34,10 +34,7 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 			}
 
 			update(update: ViewUpdate) {
-				const reconfigured = update.startState.facet(staticConfig) !== update.state.facet(staticConfig);
-				if (update.docChanged || update.viewportChanged || reconfigured) {
-					this.decorations = this.decorator.updateDeco(update, this.decorations);
-				}
+				this.decorations = this.decorator.updateDeco(update, this.decorations);
 			}
 
 		},

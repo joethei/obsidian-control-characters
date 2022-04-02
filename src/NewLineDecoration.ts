@@ -2,7 +2,7 @@ import { debounce } from "obsidian";
 import { EditorView, Decoration, DecorationSet, ViewUpdate, ViewPlugin } from "@codemirror/view";
 import { Range } from "@codemirror/rangeset";
 import {SymbolWidget} from "./SymbolWidget";
-import ControlCharacterPlugin, {staticConfig} from "./main";
+import ControlCharacterPlugin from "./main";
 import {statefulDecorations} from "./StatefulDecoration";
 import {StateField} from "@codemirror/state";
 
@@ -13,11 +13,12 @@ using a custom decoration here because a MatchDecoration only seems to allow rep
 interface TokenSpec {
 	from: number;
 	to: number;
+	value: string;
 }
 
 class StatefulDecorationSet {
 	editor: EditorView;
-	decoCache: Decoration;
+	decoCache: {[cls: string]: Decoration} = Object.create(null);
 
 	constructor(editor: EditorView) {
 		this.editor = editor;
@@ -26,11 +27,15 @@ class StatefulDecorationSet {
 	async computeAsyncDecorations(tokens: TokenSpec[]): Promise<DecorationSet | null> {
 		const decorations: Range<Decoration>[] = [];
 		for (const token of tokens) {
-			let deco = this.decoCache;
+			let deco = this.decoCache[token.value];
 			if (!deco) {
-				deco = this.decoCache = Decoration.widget({ widget: new SymbolWidget("↵") });
+				if(token.value === "↵") {
+					deco = this.decoCache[token.value] = Decoration.widget({ widget: new SymbolWidget(token.value) });
+				}else {
+					deco = this.decoCache[token.value] = Decoration.replace({ widget: new SymbolWidget(token.value) });
+				}
 			}
-			decorations.push(deco.range(token.from, token.from));
+			decorations.push(deco.range(token.from, token.to));
 		}
 		return Decoration.set(decorations, true);
 	}
@@ -57,8 +62,7 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 			}
 
 			update(update: ViewUpdate) {
-				const reconfigured = update.startState.facet(staticConfig) !== update.state.facet(staticConfig);
-				if (update.docChanged || update.viewportChanged || reconfigured) {
+				if (update.docChanged || update.viewportChanged) {
 					this.buildAsyncDecorations(update.view);
 				}
 			}
@@ -72,9 +76,19 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 
 				for (const {from, to} of view.visibleRanges) {
 					const text = view.state.sliceDoc(from, to);
-					for (const match of text.matchAll(/\n$|[\s\S]$/gm)) {
-						const index = from + match.index + 1;
-						targetElements.push({from: index, to: index});
+					for (const match of text.matchAll(/\s/g)) {
+						const index = from + match.index;
+						if(match.toString() === "\n") {
+							targetElements.push({from: index + 1, to: index + 1, value: "↵"});
+							continue;
+						}
+						let value = " ";
+						if (match.toString() === "\t" && plugin.settings.tab) {
+							value = "⇨";
+						} else if (plugin.settings.space) {
+							value = "◦";
+						}
+						targetElements.push({from: index, to: index + 1, value: value});
 					}
 				}
 				this.decoManager.debouncedUpdate(targetElements);
