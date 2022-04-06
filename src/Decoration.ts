@@ -1,6 +1,6 @@
-import { debounce } from "obsidian";
-import { EditorView, Decoration, DecorationSet, ViewUpdate, ViewPlugin } from "@codemirror/view";
-import { Range } from "@codemirror/rangeset";
+import {debounce} from "obsidian";
+import {EditorView, Decoration, DecorationSet, ViewUpdate, ViewPlugin} from "@codemirror/view";
+import {Range} from "@codemirror/rangeset";
 import {SymbolWidget} from "./SymbolWidget";
 import ControlCharacterPlugin from "./main";
 import {statefulDecorations} from "./StatefulDecoration";
@@ -10,15 +10,21 @@ import {StateField} from "@codemirror/state";
 using a custom decoration here because a MatchDecoration only seems to allow replacing decorations, not widget ones.
  */
 
+enum ControlCharacter {
+	NEWLINE = "newline",
+	SPACE = "space",
+	TAB = "tab"
+}
+
 interface TokenSpec {
 	from: number;
 	to: number;
-	value: string;
+	value: ControlCharacter;
 }
 
 class StatefulDecorationSet {
 	editor: EditorView;
-	decoCache: {[cls: string]: Decoration} = Object.create(null);
+	decoCache: { [cls: string]: Decoration } = Object.create(null);
 
 	constructor(editor: EditorView) {
 		this.editor = editor;
@@ -29,10 +35,10 @@ class StatefulDecorationSet {
 		for (const token of tokens) {
 			let deco = this.decoCache[token.value];
 			if (!deco) {
-				if(token.value === "↵") {
-					deco = this.decoCache[token.value] = Decoration.widget({ widget: new SymbolWidget(token.value) });
-				}else {
-					deco = this.decoCache[token.value] = Decoration.replace({ widget: new SymbolWidget(token.value) });
+				if (token.value === ControlCharacter.NEWLINE) {
+					deco = this.decoCache[token.value] = Decoration.widget({widget: new SymbolWidget("↵")});
+				} else {
+					deco = this.decoCache[token.value] = Decoration.mark({class: "control-character", attributes: {type: token.value}});
 				}
 			}
 			decorations.push(deco.range(token.from, token.to));
@@ -46,7 +52,7 @@ class StatefulDecorationSet {
 		const decorations = await this.computeAsyncDecorations(tokens);
 		// if our compute function returned nothing and the state field still has decorations, clear them out
 		if (decorations || this.editor.state.field(statefulDecorations.field).size) {
-			this.editor.dispatch({ effects: statefulDecorations.update.of(decorations || Decoration.none) });
+			this.editor.dispatch({effects: statefulDecorations.update.of(decorations || Decoration.none)});
 		}
 	}
 }
@@ -68,7 +74,7 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 			}
 
 			buildAsyncDecorations(view: EditorView) {
-				if(!plugin.settings.enabled || !plugin.settings.newLine) {
+				if (!plugin.settings.enabled || !plugin.settings.newLine) {
 					this.decoManager.debouncedUpdate([]);
 					return;
 				}
@@ -78,15 +84,15 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 					const text = view.state.sliceDoc(from, to);
 					for (const match of text.matchAll(/\s/g)) {
 						const index = from + match.index;
-						if(match.toString() === "\n") {
-							targetElements.push({from: index + 1, to: index + 1, value: "↵"});
+						if (match.toString() === "\n") {
+							targetElements.push({from: index, to: index, value: ControlCharacter.NEWLINE});
 							continue;
 						}
-						let value = " ";
+						let value: ControlCharacter;
 						if (match.toString() === "\t" && plugin.settings.tab) {
-							value = "⇨";
+							value = ControlCharacter.TAB;
 						} else if (plugin.settings.space) {
-							value = "◦";
+							value = ControlCharacter.SPACE;
 						}
 						targetElements.push({from: index, to: index + 1, value: value});
 					}
@@ -98,6 +104,6 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 
 }
 
-export function newLineDecoration(plugin: ControlCharacterPlugin): (StateField<DecorationSet> | ViewPlugin<{ decoManager: StatefulDecorationSet; update(update: ViewUpdate): void; destroy(): void; buildAsyncDecorations(view: EditorView): void }>)[] {
+export function decoration(plugin: ControlCharacterPlugin): (StateField<DecorationSet> | ViewPlugin<{ decoManager: StatefulDecorationSet; update(update: ViewUpdate): void; destroy(): void; buildAsyncDecorations(view: EditorView): void }>)[] {
 	return [statefulDecorations.field, buildViewPlugin(plugin)];
 }

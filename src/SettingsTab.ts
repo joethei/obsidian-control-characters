@@ -20,7 +20,7 @@ export class ControlCharactersSettingsTab extends PluginSettingTab {
 			.addToggle(toggle => {
 				toggle
 					.setValue(this.plugin.settings.space)
-					.onChange(async(value) => {
+					.onChange(async (value) => {
 						this.plugin.settings.space = value;
 						await this.plugin.saveSettings();
 					});
@@ -31,7 +31,7 @@ export class ControlCharactersSettingsTab extends PluginSettingTab {
 			.addToggle(toggle => {
 				toggle
 					.setValue(this.plugin.settings.tab)
-					.onChange(async(value) => {
+					.onChange(async (value) => {
 						this.plugin.settings.tab = value;
 						await this.plugin.saveSettings();
 					});
@@ -42,7 +42,7 @@ export class ControlCharactersSettingsTab extends PluginSettingTab {
 			.addToggle(toggle => {
 				toggle
 					.setValue(this.plugin.settings.newLine)
-					.onChange(async(value) => {
+					.onChange(async (value) => {
 						this.plugin.settings.newLine = value;
 						await this.plugin.saveSettings();
 					});

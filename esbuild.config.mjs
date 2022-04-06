@@ -4,6 +4,8 @@ import process from "process";
 import builtins from 'builtin-modules';
 import sass from "sass";
 import minify from "css-minify";
+import autoprefixer from "autoprefixer";
+import postcss from "postcss";
 
 
 const banner =
@@ -29,7 +31,8 @@ const copyMinifiedCSS = {
 			}else {
 				content = `${banner}\n${css}`;
 			}
-			fs.writeFileSync('build/styles.css', content, {encoding: 'utf-8'});
+			const result = await postcss([autoprefixer()]).process(content);
+			fs.writeFileSync('build/styles.css', result.css, {encoding: 'utf-8'});
 		})
 	}
 }

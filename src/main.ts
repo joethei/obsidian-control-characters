@@ -1,7 +1,7 @@
 import {Notice, Plugin} from 'obsidian';
-import { Extension, Prec} from "@codemirror/state";
+import {Extension, Prec} from "@codemirror/state";
 import {ControlCharactersSettingsTab} from "./SettingsTab";
-import {newLineDecoration} from "./NewLineDecoration";
+import {decoration} from "./Decoration";
 
 interface ControlCharacterSettings {
 	newLine: boolean,
@@ -22,14 +22,14 @@ export default class ControlCharacterPlugin extends Plugin {
 	settings: ControlCharacterSettings;
 	enabledExtensions: Extension[] = [];
 
-	newLineExtension: Extension = Prec.lowest(newLineDecoration(this));
+	newLineExtension: Extension = Prec.lowest(decoration(this));
 
 
 	async onload() {
-		if (!(this.app.vault as any).config?.legacyEditor) {
+		if (!(this.app.vault as any).getConfig("legacyEditor")) {
 			await this.loadSettings();
 
-			if(this.settings.enabled) {
+			if (this.settings.enabled) {
 				this.enabledExtensions.push(this.newLineExtension);
 			}
 
@@ -44,11 +44,11 @@ export default class ControlCharacterPlugin extends Plugin {
 				callback: async () => {
 					this.settings.enabled = !this.settings.enabled;
 					await this.saveSettings();
-					if(!this.settings.enabled) {
-						while(this.enabledExtensions.length > 0) {
+					if (!this.settings.enabled) {
+						while (this.enabledExtensions.length > 0) {
 							this.enabledExtensions.pop();
 						}
-					}else {
+					} else {
 						this.enabledExtensions.push(this.newLineExtension);
 					}
 

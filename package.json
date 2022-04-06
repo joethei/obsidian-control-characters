@@ -1,13 +1,14 @@
 {
 	"name": "obsidian-control-characters",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Show control/non-printing characters in edit mode",
 	"main": "build/main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
-		"lint": "eslint . --ext .ts"
+		"lint": "eslint . --ext .ts",
+		"lint-css": "stylelint src/styles.scss"
 	},
 	"keywords": [],
 	"author": "Johannes Theiner",
@@ -34,6 +35,10 @@
 		"tslib": "2.3.1",
 		"typescript": "4.4.4",
 		"sass": "1.49.9",
-		"css-minify": "2.0.0"
+		"css-minify": "2.0.0",
+		"stylelint-config-standard": "25.0.0",
+		"stylelint-config-standard-scss": "3.0.0",
+		"postcss": "8.4.12",
+		"autoprefixer": "10.4.4"
 	}
 }

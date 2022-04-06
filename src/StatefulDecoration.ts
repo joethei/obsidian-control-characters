@@ -20,6 +20,6 @@ function defineStatefulDecoration(): {
 		},
 		provide: field => EditorView.decorations.from(field),
 	});
-	return { update, field };
+	return {update, field};
 }
 
