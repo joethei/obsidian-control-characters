@@ -17,6 +17,7 @@ export class SymbolWidget extends WidgetType {
 		const span = document.createElement("span");
 		span.textContent = this.text;
 		span.addClass("control-character");
+		span.setAttribute("type", "newline");
 		return span;
 	}
 

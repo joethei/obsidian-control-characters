@@ -8,7 +8,11 @@ Plugin for [Obsidian](https://obsidian.md)
 
 Show control characters in edit mode.
 
-![Demo screenshot](https://i.joethei.space/Obsidian_iYhRkiQ0sX.png)
+![Demo screenshot](https://i.joethei.space/Obsidian_136foBrkZM.png)
+
+You can customize most of the styling with the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin.
+
+The one thing that is currently not configurable is the symbol for newlines.
 
 ---
 

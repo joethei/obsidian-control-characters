@@ -26,6 +26,7 @@ export default class ControlCharacterPlugin extends Plugin {
 
 
 	async onload() {
+		//eslint-disable-next-line @typescript-eslint/no-explicit-any
 		if (!(this.app.vault as any).getConfig("legacyEditor")) {
 			await this.loadSettings();
 
@@ -53,9 +54,11 @@ export default class ControlCharacterPlugin extends Plugin {
 					}
 
 					this.app.workspace.updateOptions();
-
 				}
-			})
+			});
+
+			this.app.workspace.trigger('parse-style-settings');
+
 
 		} else {
 			new Notice("Control Characters: You are using the legacy editor, this plugin is not supported there");
