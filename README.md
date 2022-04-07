@@ -12,8 +12,6 @@ Show control characters in edit mode.
 
 You can customize most of the styling with the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin.
 
-The one thing that is currently not configurable is the symbol for newlines.
-
 ---
 
 This plugin is built for the new editor and does not work on the old _legacy_ editor.

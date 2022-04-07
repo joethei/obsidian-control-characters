@@ -1,7 +1,6 @@
 import {debounce} from "obsidian";
 import {EditorView, Decoration, DecorationSet, ViewUpdate, ViewPlugin} from "@codemirror/view";
 import {Range} from "@codemirror/rangeset";
-import {SymbolWidget} from "./SymbolWidget";
 import ControlCharacterPlugin from "./main";
 import {statefulDecorations} from "./StatefulDecoration";
 import {StateField} from "@codemirror/state";
@@ -35,11 +34,11 @@ class StatefulDecorationSet {
 		for (const token of tokens) {
 			let deco = this.decoCache[token.value];
 			if (!deco) {
-				if (token.value === ControlCharacter.NEWLINE) {
-					deco = this.decoCache[token.value] = Decoration.widget({widget: new SymbolWidget("↵")});
-				} else {
+				//if (token.value === ControlCharacter.NEWLINE) {
+				//	deco = this.decoCache[token.value] = Decoration.widget({widget: new SymbolWidget("↵")});
+				//} else {
 					deco = this.decoCache[token.value] = Decoration.mark({class: "control-character", attributes: {type: token.value}});
-				}
+				//}
 			}
 			decorations.push(deco.range(token.from, token.to));
 		}
@@ -85,7 +84,7 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 					for (const match of text.matchAll(/\s/g)) {
 						const index = from + match.index;
 						if (match.toString() === "\n") {
-							targetElements.push({from: index, to: index, value: ControlCharacter.NEWLINE});
+							targetElements.push({from: index - 1, to: index, value: ControlCharacter.NEWLINE});
 							continue;
 						}
 						let value: ControlCharacter;

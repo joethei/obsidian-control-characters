@@ -1,7 +1,7 @@
 {
 	"id": "control-characters",
 	"name": "Control Characters",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"minAppVersion": "0.13.0",
 	"description": "Show control/non-printing characters in edit mode",
 	"author": "Johannes Theiner",

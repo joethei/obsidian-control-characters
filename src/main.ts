@@ -45,6 +45,7 @@ export default class ControlCharacterPlugin extends Plugin {
 				callback: async () => {
 					this.settings.enabled = !this.settings.enabled;
 					await this.saveSettings();
+					console.log(this.settings.enabled);
 					if (!this.settings.enabled) {
 						while (this.enabledExtensions.length > 0) {
 							this.enabledExtensions.pop();
