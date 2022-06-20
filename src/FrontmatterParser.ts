@@ -12,7 +12,7 @@ export function parseFrontmatter(view: EditorView, settings: ControlCharacterSet
 	};
 	const matches = view.state.sliceDoc().match(/---([\s\S]*?)---/);
 	if(matches && matches.length !== 0) {
-		for (let match of matches) {
+		for (const match of matches) {
 			const replaced = match.replace(/---/g, "");
 			try {
 				const frontmatter = parseYaml(replaced);

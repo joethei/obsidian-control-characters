@@ -74,6 +74,6 @@ settings:
 	background: var(--control-character-color);
 
 	@include icon(var(--control-character-other));
+
 	mask-size: unset;
 }
-

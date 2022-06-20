@@ -35,7 +35,7 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 
 			buildAsyncDecorations(view: EditorView, settings: ControlCharacterSettings) {
 				const targetElements: TokenSpec[] = [];
-				for (let range of view.state.selection.ranges) {
+				for (const range of view.state.selection.ranges) {
 					targetElements.push(...plugin.getTokens(view, range.from, range.to, settings));
 				}
 				this.decoManager.debouncedUpdate(targetElements);
