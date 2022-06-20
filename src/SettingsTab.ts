@@ -16,6 +16,19 @@ export class ControlCharactersSettingsTab extends PluginSettingTab {
 		containerEl.createEl('h2', {text: 'Control Characters'});
 
 		new Setting(containerEl)
+			.setName("Only show control characters in selection")
+			.addToggle(toggle => {
+				toggle
+					.setValue(this.plugin.settings.selection)
+					.onChange(async (value) => {
+						this.plugin.settings.selection = value;
+						await this.plugin.saveSettings();
+					});
+			});
+
+		containerEl.createEl("h3", {text: 'Show'});
+
+		new Setting(containerEl)
 			.setName("Space")
 			.addToggle(toggle => {
 				toggle

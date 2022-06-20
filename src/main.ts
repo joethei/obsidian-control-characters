@@ -1,40 +1,22 @@
 import {Notice, Plugin} from 'obsidian';
-import {Extension, Prec} from "@codemirror/state";
+import {Prec} from "@codemirror/state";
 import {ControlCharactersSettingsTab} from "./SettingsTab";
-import {decoration} from "./Decoration";
-
-interface ControlCharacterSettings {
-	newLine: boolean,
-	tab: boolean,
-	space: boolean,
-	enabled: boolean,
-}
-
-const DEFAULT_SETTINGS: ControlCharacterSettings = {
-	newLine: true,
-	tab: true,
-	space: true,
-	enabled: true,
-}
-
+import {normalDecoration} from "./NormalDecoration";
+import {ControlCharacterSettings, DEFAULT_SETTINGS} from "./settings";
+import {selectionDecorations} from "./SelectionHighlight";
+import {ControlCharacter, TokenSpec} from "./types";
+import {EditorView} from "@codemirror/view";
 
 export default class ControlCharacterPlugin extends Plugin {
 	settings: ControlCharacterSettings;
-	enabledExtensions: Extension[] = [];
-
-	newLineExtension: Extension = Prec.lowest(decoration(this));
-
 
 	async onload() {
 		//eslint-disable-next-line @typescript-eslint/no-explicit-any
 		if (!(this.app.vault as any).getConfig("legacyEditor")) {
 			await this.loadSettings();
 
-			if (this.settings.enabled) {
-				this.enabledExtensions.push(this.newLineExtension);
-			}
-
-			this.registerEditorExtension(this.enabledExtensions);
+			this.registerEditorExtension(Prec.lowest(normalDecoration(this)));
+			this.registerEditorExtension(Prec.lowest(selectionDecorations(this)));
 
 			this.addSettingTab(new ControlCharactersSettingsTab(this));
 
@@ -44,15 +26,8 @@ export default class ControlCharacterPlugin extends Plugin {
 				name: "Show/hide control characters",
 				callback: async () => {
 					this.settings.enabled = !this.settings.enabled;
-					await this.saveSettings();
 					console.log(this.settings.enabled);
-					if (!this.settings.enabled) {
-						while (this.enabledExtensions.length > 0) {
-							this.enabledExtensions.pop();
-						}
-					} else {
-						this.enabledExtensions.push(this.newLineExtension);
-					}
+					await this.saveSettings();
 
 					this.app.workspace.updateOptions();
 				}
@@ -76,5 +51,27 @@ export default class ControlCharacterPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	public getTokens(view: EditorView, from: number, to: number, settings: ControlCharacterSettings) : TokenSpec[] {
+		const targetElements: TokenSpec[] = [];
+		const text = view.state.sliceDoc(from, to);
+		for (const match of text.matchAll(/[\u00A0\u202F\u2007\u2060\s]/gu)) {
+			const index = from + match.index;
+			if (match.toString() === "\n" && settings.newLine) {
+				targetElements.push({from: index - 1, to: index, value: ControlCharacter.NEWLINE});
+				continue;
+			}
+			let value: ControlCharacter;
+			if (match.toString() === "\t" && settings.tab) {
+				value = ControlCharacter.TAB;
+			} else if (match.toString() === " " && settings.space) {
+				value = ControlCharacter.SPACE;
+			}else {
+				value = ControlCharacter.OTHER;
+			}
+			targetElements.push({from: index, to: index + 1, value: value});
+		}
+		return targetElements;
 	}
 }
