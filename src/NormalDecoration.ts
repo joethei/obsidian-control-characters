@@ -6,6 +6,7 @@ import {StatefulDecorationSet} from "./StatefulDecorationSet";
 import {TokenSpec} from "./types";
 import {parseFrontmatter} from "./FrontmatterParser";
 import {ControlCharacterSettings} from "./settings";
+import {editorLivePreviewField} from "obsidian";
 
 /*
 using a custom Decoration here because a MatchDecoration only seems to allow replacing decorations, nothing else.

@@ -15,14 +15,14 @@ Show control characters in edit mode.
 By default, the plugin will show all characters in a note.
 But you can configure it to only show control characters when selecting text.
 
-You can also overwrite this behaviour in the frontmatter with the `cc-selection` key.
+You can also overwrite this behaviour with the `cc-selection` property.
 
 ## Overwriting settings for a note
 
-You can also change the settings for a single note, by using the [Frontmatter](https://help.obsidian.md/Advanced+topics/YAML+front+matter).
+You can also change the settings for a single note, by using [Properties](https://help.obsidian.md/Editing+and+formatting/Properties).
 
 So for example, the following note will only have the new line characters.
-```yaml
+```md
 ---
 cc: true
 cc-tab: false
@@ -37,11 +37,6 @@ Lorem ipsum dolor sit amet, consectetur adipisici elit.
 ## Customization
 
 You can customize most of the styling with the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin.
-
----
-
-This plugin is built for the new editor and does not work on the old _legacy_ editor.
-If you really want to use the legacy editor you will have to use the [Show whitespace](https://github.com/deathau/cm-show-whitespace-obsidian) plugin.
 
 ---
 

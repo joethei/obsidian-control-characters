@@ -4,6 +4,8 @@ export interface ControlCharacterSettings {
 	space: boolean,
 	enabled: boolean,
 	selection: boolean,
+	sourceMode: boolean,
+	livePreviewMode: boolean,
 }
 
 export const DEFAULT_SETTINGS: ControlCharacterSettings = {
@@ -12,4 +14,6 @@ export const DEFAULT_SETTINGS: ControlCharacterSettings = {
 	space: true,
 	enabled: true,
 	selection: false,
+	sourceMode: true,
+	livePreviewMode: true,
 }

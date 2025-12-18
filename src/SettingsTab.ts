@@ -24,7 +24,29 @@ export class ControlCharactersSettingsTab extends PluginSettingTab {
 					});
 			});
 
-		new Setting(containerEl).setName('Show').setHeading();
+		new Setting(containerEl)
+			.setName('Show in Source mode')
+			.addToggle(toggle => {
+				toggle
+					.setValue(this.plugin.settings.sourceMode)
+					.onChange(async(value) => {
+						this.plugin.settings.sourceMode = value;
+						await this.plugin.saveSettings();
+					});
+			});
+
+		new Setting(containerEl)
+			.setName('Show in Live preview mode')
+			.addToggle(toggle => {
+				toggle
+					.setValue(this.plugin.settings.livePreviewMode)
+					.onChange(async(value) => {
+						this.plugin.settings.livePreviewMode = value;
+						await this.plugin.saveSettings();
+					});
+			});
+
+		new Setting(containerEl).setName('Characters').setHeading();
 
 		new Setting(containerEl)
 			.setName("Space")

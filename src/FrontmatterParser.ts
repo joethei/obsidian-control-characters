@@ -9,6 +9,8 @@ export function parseFrontmatter(view: EditorView, settings: ControlCharacterSet
 		selection: settings.selection,
 		space: settings.space,
 		tab: settings.tab,
+		sourceMode: settings.sourceMode,
+		livePreviewMode: settings.livePreviewMode
 	};
 	const matches = view.state.sliceDoc().match(/---([\s\S]*?)---/);
 	if(matches && matches.length !== 0) {
