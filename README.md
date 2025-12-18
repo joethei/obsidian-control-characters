@@ -1,14 +1,11 @@
 # Control Characters
 Plugin for [Obsidian](https://obsidian.md)
 
-![Maintenance](https://shields.io:/maintenance/yes/2024)
 ![min app version](https://shields.io/github/manifest-json/minAppVersion/joethei/obsidian-control-characters?label=lowest%20supported%20app%20version)
 [![libera manifesto](https://shields.io/badge/libera-manifesto-lightgrey.svg)](https://liberamanifesto.com)
 ---
 
 Show control characters in edit mode.
-
-![Demo screenshot](https://i.joethei.space/Obsidian_136foBrkZM.png)
 
 ## Only show characters in selection
 
