@@ -2,7 +2,7 @@ import {DecorationSet, EditorView, ViewPlugin, ViewUpdate} from "@codemirror/vie
 import {StatefulDecorationSet} from "./StatefulDecorationSet";
 import ControlCharacterPlugin from "./main";
 import {StateField} from "@codemirror/state";
-import {statefulDecorations} from "./StatefulDecoration";
+import {forceUpdate, statefulDecorations} from "./StatefulDecoration";
 import {parseFrontmatter} from "./FrontmatterParser";
 import {TokenSpec} from "./types";
 import {ControlCharacterSettings} from "./settings";
@@ -28,7 +28,8 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 					return;
 				}
 
-				if (update.selectionSet || update.docChanged || update.viewportChanged) {
+				const forced = update.transactions.some(tr => tr.effects.some(e => e.is(forceUpdate)));
+			if (forced || update.selectionSet || update.docChanged || update.viewportChanged) {
 					this.buildAsyncDecorations(update.view, frontmatter);
 				}
 			}
