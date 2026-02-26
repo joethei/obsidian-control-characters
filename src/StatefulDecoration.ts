@@ -1,6 +1,7 @@
 import {StateEffect, StateEffectType, StateField} from "@codemirror/state";
 import {Decoration, DecorationSet, EditorView} from "@codemirror/view";
 
+export const forceUpdate = StateEffect.define<null>();
 export const statefulDecorations = defineStatefulDecoration();
 
 // Generic helper for creating pairs of editor state fields and
@@ -22,4 +23,5 @@ function defineStatefulDecoration(): {
 	});
 	return {update, field};
 }
+
 

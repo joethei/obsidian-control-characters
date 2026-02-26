@@ -1,6 +1,6 @@
 import {EditorView, DecorationSet, ViewUpdate, ViewPlugin} from "@codemirror/view";
 import ControlCharacterPlugin from "./main";
-import {statefulDecorations} from "./StatefulDecoration";
+import {forceUpdate, statefulDecorations} from "./StatefulDecoration";
 import {StateField} from "@codemirror/state";
 import {StatefulDecorationSet} from "./StatefulDecorationSet";
 import {TokenSpec} from "./types";
@@ -22,7 +22,8 @@ function buildViewPlugin(plugin: ControlCharacterPlugin) {
 			}
 
 			update(update: ViewUpdate) {
-				if (update.docChanged || update.viewportChanged) {
+				const forced = update.transactions.some(tr => tr.effects.some(e => e.is(forceUpdate)));
+				if (forced || update.docChanged || update.viewportChanged) {
 					const frontmatter = parseFrontmatter(update.view, plugin.settings);
 					if (!frontmatter.enabled || frontmatter.selection) {
 						this.decoManager.debouncedUpdate([]);
