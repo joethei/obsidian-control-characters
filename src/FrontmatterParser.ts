@@ -9,6 +9,8 @@ export function parseFrontmatter(view: EditorView, settings: ControlCharacterSet
 		selection: settings.selection,
 		space: settings.space,
 		tab: settings.tab,
+		other: settings.other,
+		otherLabels: settings.otherLabels,
 		sourceMode: settings.sourceMode,
 		livePreviewMode: settings.livePreviewMode
 	};
@@ -29,6 +31,12 @@ export function parseFrontmatter(view: EditorView, settings: ControlCharacterSet
 				}
 				if(frontmatter.hasOwnProperty("cc-space")) {
 					result.space = frontmatter['cc-space'];
+				}
+				if(frontmatter.hasOwnProperty("cc-other")) {
+					result.other = frontmatter['cc-other'];
+				}
+				if(frontmatter.hasOwnProperty("cc-other-labels")) {
+					result.otherLabels = frontmatter['cc-other-labels'];
 				}
 				if(frontmatter.hasOwnProperty("cc-selection")) {
 					result.selection = frontmatter['cc-selection'];
